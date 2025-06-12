@@ -1,8 +1,9 @@
 from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional, List   
+from typing import Optional, List
+from uuid import UUID, uuid4   
 
 class Category(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
     name: str
 
     products: List['Product'] = Relationship(back_populates='category')
