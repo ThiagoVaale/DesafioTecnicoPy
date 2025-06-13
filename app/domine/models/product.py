@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 
 class Product(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    name: str
+    name: str = Field(unique=True)
     description: str
     price: float
     stock: int

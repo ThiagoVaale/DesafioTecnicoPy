@@ -4,6 +4,6 @@ from uuid import UUID, uuid4
 
 class Category(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    name: str
+    name: str = Field(unique=True)
 
     products: List['Product'] = Relationship(back_populates='category')
