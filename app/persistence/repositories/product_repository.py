@@ -1,0 +1,39 @@
+from sqlmodel import Session, select
+from app.domine.models.product import Product
+from app.domine.models.category import Category
+from typing import Optional, List
+
+class ProductRepository: 
+    def __init__(self, session: Session):
+        self.session = session
+
+    def create_product(self, create_product: Product) -> Product:
+        self.session.add(create_product)
+        self.session.commit()
+        self.session.refresh(create_product)
+        return create_product
+    
+    def get_product(self, product_name: str) -> Optional[Product]:
+        product = select(Product).where(Product.name == product_name)
+        return self.session.exec(product).all()
+    
+    def get_products(self) -> List[Product]:
+        products = select(Product).where(Product.is_active == True)
+        return self.session.exec(products).all()
+    
+    def get_product_category(self, category: str) -> List[Product]:
+        products_category = select(Product).join(Category).where(Category.name == category, Product.is_active == True)
+        return self.session.exec(products_category).all()
+    
+    def update_product(self, product_update: Product) -> Product:
+        self.session.add(product_update)
+        self.session.commit()
+        self.session.refresh(product_update)
+        return product_update
+    
+    def delete_product(self, product: Product) -> Product:
+        product.is_active = False
+        deleted_product = self.update_product(product)
+        return deleted_product
+
+ 

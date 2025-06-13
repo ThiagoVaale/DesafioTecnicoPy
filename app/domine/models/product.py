@@ -8,6 +8,7 @@ class Product(SQLModel, table=True):
     description: str
     price: float
     stock: int
+    is_active: bool = Field(default=True)
     category_id: UUID = Field(foreign_key='category.id')
 
     category: Optional['Category'] = Relationship(back_populates='products')
