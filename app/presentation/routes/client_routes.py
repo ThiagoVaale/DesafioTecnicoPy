@@ -23,13 +23,13 @@ def get_all_client(controller: ClientController = Depends(get_controller)):
     return controller.get_all_clients()
 
 @router.get('/{username}', response_model=ClientResponse, status_code=200)
-def get_client_with_username(username: UUID, controller: ClientController = Depends(get_controller())):
+def get_client_with_username(username: str, controller: ClientController = Depends(get_controller)):
     return controller.get_client_with_username(username)
 
 @router.put('/{username}', response_model=ClientResponse, status_code=200)
-def update_client(username: str, updateClient: ClientUpdate, controller: ClientController = Depends(get_controller())):
-     return controller.update_client(username, updateClient)
+def update_client(username: str, update_client: ClientUpdate, controller: ClientController = Depends(get_controller)):
+     return controller.update_client(username, update_client)
 
 @router.delete('/{username}', status_code=200)
-def delete_client(username: str, controller: ClientController = Depends(get_controller())):
+def delete_client(username: str, controller: ClientController = Depends(get_controller)):
     return controller.delete_client(username)

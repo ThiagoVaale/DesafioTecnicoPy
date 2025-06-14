@@ -2,22 +2,24 @@ from sqlmodel import Session, select, or_
 from typing import List, Optional
 from app.domine.models.client import Client
 from uuid import UUID
+from app.presentation.schemas.client_schema import ClientCreate
 
 class ClientRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def create_client(self, clientCreate: Client) -> Client:
-        self.session.add(clientCreate)
+    def create_client(self, client_create: ClientCreate) -> Client:
+        client = Client(**client_create.model_dump())
+        self.session.add(client)
         self.session.commit()
-        self.session.refresh(clientCreate)
-        return clientCreate
+        self.session.refresh(client)
+        return client
     
     def get_all_clients(self) -> List[Client]:
-        return self.session.exec(select(Client)).all()
+        return self.session.exec(select(Client).where(Client.is_active)).all()
     
     def get_client_with_username(self, username: str) -> Optional[Client]:
-        return self.session.get(Client, username)
+        return self.session.exec(select(Client).where(Client.username == username)).first()
     
     def update_client(self, client_update: Client) -> Optional[Client]:
         self.session.add(client_update)
@@ -28,6 +30,8 @@ class ClientRepository:
     
     def delete_client(self, deleteClient: Client) -> Client:
         deleteClient.is_active = False
-        deleted_client = self.update_client(deleteClient)
-        return deleted_client
+        self.session.add(deleteClient)
+        self.session.commit()
+        self.session.refresh(deleteClient)
+        return deleteClient
 

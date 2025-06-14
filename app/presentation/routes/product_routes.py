@@ -14,30 +14,29 @@ def get_controller(session: Session = Depends(get_session)) -> ProductController
     return ProductController(repository)
 
 @router.post('/', response_model=ProductResponse, status_code=201)
-def create_product(create_product: ProductCreate, controller: ProductController = Depends(get_controller())):
+def create_product(create_product: ProductCreate, controller: ProductController = Depends(get_controller)):
     return controller.create_product(create_product)
 
-
-@router.get('/{product_name}', response_model=ProductResponse, status_code=200)
-def get_product(product_name: str, controller: ProductController = Depends(get_controller())):
-    return controller.get_product(product_name)
-
 @router.get('/', response_model=List[ProductResponse], status_code=200)
-def get_products(controller: ProductController = Depends(get_controller())):
+def get_products(controller: ProductController = Depends(get_controller)):
     return controller.get_products()
 
-@router.get('/', response_model=List[ProductResponse], status_code=202)
+@router.get('/{product_name}', response_model=ProductResponse, status_code=200)
+def get_product(product_name: str, controller: ProductController = Depends(get_controller)):
+    return controller.get_product(product_name)
+
+@router.get('/{product_category}', response_model=List[ProductResponse], status_code=202)
 def get_products_category(
-    category: Optional[str] = Query(default=None),
-    controller: ProductController = Depends(get_controller())):
-    return controller.get_product_category(category)
+    product_category: Optional[str] = Query(default=None),
+    controller: ProductController = Depends(get_controller)):
+    return controller.get_product_category(product_category)
 
 
-@router.put('/', response_model=ProductUpdate, status_code=200)
-def update_product(product_name: str, product_update: ProductUpdate, controller: ProductController = Depends(get_controller())):
+@router.put('/{product_name}', response_model=ProductResponse, status_code=200)
+def update_product(product_name: str, product_update: ProductUpdate, controller: ProductController = Depends(get_controller)):
     return controller.update_product(product_name, product_update)
 
 
 @router.delete('/{product_name}', response_model=ProductResponse, status_code=200)
-def delete_product(product_name: str, controller: ProductController = Depends(get_controller())):
+def delete_product(product_name: str, controller: ProductController = Depends(get_controller)):
     return controller.delete_product(product_name)

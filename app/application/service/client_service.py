@@ -22,7 +22,7 @@ class ClientService:
     def get_all_clients(self) -> List[ClientResponse]:
         clients = self.repository.get_all_clients()
         if not clients:
-            return HTTPException(status_code=404, detail='No existen clientes')
+            raise HTTPException(status_code=404, detail='No existen clientes')
         
         list_clients = []
         
@@ -43,7 +43,7 @@ class ClientService:
     
     def update_client(self, username: str, update_client: ClientUpdate) -> ClientResponse:
         client_find = self.repository.get_client_with_username(username)
-
+        
         if client_find is None:
             raise HTTPException(
                 status_code=400, detail='El cliente no se pudo actualizar'
