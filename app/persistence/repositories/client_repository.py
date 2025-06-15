@@ -21,6 +21,9 @@ class ClientRepository:
     def get_client_with_username(self, username: str) -> Optional[Client]:
         return self.session.exec(select(Client).where(Client.username == username)).first()
     
+    def get_client_with_id(self, id_client: UUID) -> Optional[Client]:
+        return self.session.exec(select(Client).where(Client.id == id_client)).first()
+
     def update_client(self, client_update: Client) -> Optional[Client]:
         self.session.add(client_update)
         self.session.commit()

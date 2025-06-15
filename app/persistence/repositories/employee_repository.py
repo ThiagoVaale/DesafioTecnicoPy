@@ -26,6 +26,11 @@ class EmployeeRepository:
         find_employee = select(Employee).where(Employee.username == username_employee)
         return self.session.exec(find_employee).first()
 
+
+    def get_employee_id(self, id_employee: UUID) -> Optional[Employee]:
+        return self.session.exec(select(Employee).where(Employee.id == id_employee)).first()
+    
+
     def get_employee_with_order(self, username_employee: str) -> Optional[Employee]:
         each_employee = select(Employee).where(Employee.username == username_employee).options(selectinload(Employee.orders))
         get_employee = self.session.exec(each_employee).first()

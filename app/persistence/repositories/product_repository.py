@@ -2,6 +2,8 @@ from sqlmodel import Session, select
 from app.domine.models.product import Product
 from app.domine.models.category import Category
 from typing import Optional, List
+from uuid import UUID
+
 
 class ProductRepository: 
     def __init__(self, session: Session):
@@ -17,6 +19,9 @@ class ProductRepository:
         product = select(Product).where(Product.name == product_name)
         return self.session.exec(product).all()
     
+    def get_product_id(self, id_product: UUID) -> Optional[Product]:
+        return self.session.exec(select(Product).where(Product.id == id_product))
+    
     def get_products(self) -> List[Product]:
         products = select(Product).where(Product.is_active == True)
         return self.session.exec(products).all()
@@ -30,6 +35,15 @@ class ProductRepository:
         self.session.commit()
         self.session.refresh(product_update)
         return product_update
+    
+    def reduce_stock(self, id_product: UUID, quantity_product: int) -> Product:
+        product = self.get_product(id_product)
+
+        product.stock -= quantity_product
+
+        self.session.add(product)
+        self.session.commit()
+        self.session.refresh(product)
     
     def delete_product(self, product: Product) -> Product:
         product.is_active = False

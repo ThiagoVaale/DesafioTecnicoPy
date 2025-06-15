@@ -10,6 +10,7 @@ class OrderItem(SQLModel, table=True):
     quantity: int
     unit_price: float
     subtotal: float
+   
 
     order: Optional['Order'] = Relationship(back_populates='order_items')
     product: Optional['Product'] = Relationship(back_populates='order_items')
