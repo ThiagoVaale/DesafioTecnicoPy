@@ -8,19 +8,21 @@ class ClientRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def create_client(self, client_create: ClientCreate) -> Client:
-        client = Client(**client_create.model_dump())
-        self.session.add(client)
+    def create_client(self, client_create: Client) -> Client:
+        self.session.add(client_create)
         self.session.commit()
-        self.session.refresh(client)
-        return client
+        self.session.refresh(client_create)
+        return client_create
     
     def get_all_clients(self) -> List[Client]:
-        return self.session.exec(select(Client).where(Client.is_active)).all()
+        return self.session.exec(select(Client).where(Client.is_active == True)).all()
     
     def get_client_with_username(self, username: str) -> Optional[Client]:
         return self.session.exec(select(Client).where(Client.username == username)).first()
     
+    def get_client_with_password(self, passsword: str) -> Optional[Client]:
+        return self.session.exec(select(Client).where(Client.password == passsword)).first()
+
     def get_client_with_id(self, id_client: UUID) -> Optional[Client]:
         return self.session.exec(select(Client).where(Client.id == id_client)).first()
 

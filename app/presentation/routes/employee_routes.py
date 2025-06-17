@@ -5,8 +5,10 @@ from app.application.controller.employee_controller import EmployeeController
 from app.persistence.repositories.employee_repository import EmployeeRepository
 from app.presentation.schemas.employee_schema import EmployeeResponse, EmployeeCreate, EmployeesOrdersResponse, EmployeeUpdate
 from typing import List
+from app.secutiry.dependencies import admin_required, employee_required
+from app.presentation.schemas.auth_schema import TokenData
 
-router = APIRouter(prefix='employees', tags=['employees'])
+router = APIRouter(prefix='/employees', tags=['employees'])
 
 def get_controller(session: Session = Depends(get_session)) -> EmployeeController:
     repository = EmployeeRepository(session)
@@ -18,22 +20,24 @@ def create_employee(employee_create: EmployeeCreate, controller: EmployeeControl
     return controller.create_employee(employee_create)
 
 @router.get('/orders/{username_employee}', response_model=EmployeesOrdersResponse, status_code=200)
-def get_employee_with_order(username_employee: str, controller: EmployeeController = Depends(get_controller)):
+def get_employee_with_order(username_employee: str, controller: EmployeeController = Depends(get_controller), 
+                            current_admin: TokenData = Depends(admin_required), current_employee: TokenData = Depends(employee_required)):
     return controller.get_employee_with_order(username_employee)
 
 @router.get('/orders', response_model=List[EmployeesOrdersResponse], status_code=200)
-def get_employees_with_order(controller: EmployeeController = Depends(get_controller)):
+def get_employees_with_order(controller: EmployeeController = Depends(get_controller), current_user: TokenData = Depends(admin_required)):
     return controller.get_employees_with_order()
 
 @router.put('/{username_employee}', response_model=EmployeeResponse, status_code=200)
-def update_employee(username_employee: str, update_employee: EmployeeUpdate, controller: EmployeeController = Depends(get_controller)):
+def update_employee(username_employee: str, update_employee: EmployeeUpdate, controller: EmployeeController = Depends(get_controller),
+                    current_employee: TokenData = Depends(employee_required), current_admin: TokenData = Depends(admin_required)):
     return controller.update_employee(username_employee, update_employee)
 
 @router.patch('/{username_employee}/salary', response_model=EmployeeResponse, status_code=200)
-def update_employee_admin(username_employee: str, new_salary: float, controller: EmployeeController = Depends(get_controller)):
+def update_employee_admin(username_employee: str, new_salary: float, controller: EmployeeController = Depends(get_controller), current_admin: TokenData = Depends(admin_required)):
     return controller.update_employee_admin(username_employee, new_salary)
 
 
 @router.delete('/{username_employee}', response_model=EmployeeResponse, status_code=200)
-def delete_employee(username_employee: str, controller: EmployeeController = Depends(get_controller)):
+def delete_employee(username_employee: str, controller: EmployeeController = Depends(get_controller), current_admin: TokenData = Depends(admin_required)):
     return controller.delete_employee(username_employee)

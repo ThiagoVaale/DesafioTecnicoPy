@@ -10,17 +10,18 @@ from app.domine.enums.statusOrder_enum import StatusOrderEnum
 class OrderResponse(BaseModel):
     id: UUID
     client_id: UUID
-    employee: Optional[UUID]
+    employee_id: Optional[UUID]
     total_amount: float
     status: StatusOrderEnum
     shipping_address: str
     payment_method: str
-    createdAt: datetime
-    updatedAt: datetime
+    created_at: datetime
+    updated_at: datetime
     items: List[OrderItemReponse]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        'from_attributes': True
+    }
 
 
 class CreateOrder(BaseModel):

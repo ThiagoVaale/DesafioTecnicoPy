@@ -9,10 +9,11 @@ from app.persistence.repositories.product_repository import ProductRepository
 from app.persistence.repositories.employee_repository import EmployeeRepository
 from app.persistence.repositories.client_repository import ClientRepository
 from app.persistence.repositories.order_repository import OrderRepository
+from app.secutiry.dependencies import admin_required, employee_required
+from app.presentation.schemas.auth_schema import TokenData
 
 
-
-router = APIRouter(prefix='orders', tags=['orders'])
+router = APIRouter(prefix='/orders', tags=['orders'])
 
 def get_controller(session: Session = Depends(get_session)) -> OrderController:
     order_repository = OrderRepository(session)
@@ -30,36 +31,39 @@ def create_order(create_order: CreateOrder, controller: OrderController = Depend
 @router.get('/{order_id}', response_model=OrderResponse, status_code=200)
 def get_order_wirth_id(
     order_id: UUID,
-    controller: OrderController = Depends(get_controller)):
+    controller: OrderController = Depends(get_controller), 
+    current_admin: TokenData = Depends(admin_required), current_employee: TokenData = Depends(employee_required)):
     return controller.get_order_with_id(order_id)
 
 @router.get('/client/{client_id}', response_model=List[OrderResponse], status_code=200)
-def get_order_employee(
+def get_order_client(
     client_id: UUID,
     controller: OrderController = Depends(get_controller)):
     return controller.get_order_client(client_id)
 
 
-@router.get('/employee/{employee_id}', response_model=OrderResponse, status_code=200)
+@router.get('/employee/{employee_id}', response_model=List[OrderResponse], status_code=200)
 def get_order_employee(
     employee_id: UUID,
-    controller: OrderController = Depends(get_controller)):
+    controller: OrderController = Depends(get_controller), 
+    current_admin: TokenData = Depends(admin_required), current_employee: TokenData = Depends(employee_required)):
     return controller.get_order_employee(employee_id)
 
 
 @router.get('/', response_model=List[OrderResponse], status_code=200)
-def get_all_order(controller: OrderController = Depends(get_controller)):
+def get_all_order(controller: OrderController = Depends(get_controller), current_admin: TokenData = Depends(admin_required)):
     return controller.get_all_order()
 
 @router.put('/{order_id}', response_model=OrderResponse, status_code=200)
 def update_order(
     update_order: UpdateOrder,
     order_id: UUID,
-    controller: OrderController = Depends(get_controller)):
+    controller: OrderController = Depends(get_controller),
+    current_admin: TokenData = Depends(admin_required), current_employee: TokenData = Depends(employee_required)):
     return controller.update_order(order_id, update_order)
 
 @router.delete('/{order_id}', response_model=OrderResponse, status_code=200)
 def cancel_order(
-    order_id: UUID = Query(default=None),
+    order_id: UUID,
     controller: OrderController = Depends(get_controller)):
     return controller.cancel_order(order_id)

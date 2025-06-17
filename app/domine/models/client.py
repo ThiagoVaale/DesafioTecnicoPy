@@ -10,7 +10,7 @@ class Client(SQLModel, table=True):
     address: str
     phone: str
     is_active: bool = Field(default=True)
-    role_id: UUID = Field(foreign_key='role.id')
+    role_id: int = Field(foreign_key='role.id')
 
     orders: List['Order'] = Relationship(back_populates='client')
     role: Optional['Role'] = Relationship(back_populates='clients')

@@ -9,8 +9,9 @@ class OrderItemReponse(BaseModel):
     unit_price: int
     subtotal: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        'from_attributes': True
+    }
     
 
 class OrderItemCreate(BaseModel):

@@ -15,8 +15,8 @@ class EmployeeController:
     def get_employees_with_order(self) -> List[EmployeesOrdersResponse]:
         return self.service.get_employees_with_order()
     
-    def update_employee(self, update_employee: EmployeeUpdate) -> EmployeeResponse:
-        return self.service.update_employee(update_employee)
+    def update_employee(self, username_employee: str, update_employee: EmployeeUpdate) -> EmployeeResponse:
+        return self.service.update_employee(username_employee, update_employee)
     
     def update_employee_admin(self, username_employee: str, new_salary: float) -> EmployeeResponse:
         return self.service.update_employee_admin(username_employee, new_salary)

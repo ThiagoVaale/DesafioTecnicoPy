@@ -20,17 +20,22 @@ class EmployeeResponse(BaseModel):
     role: RoleEnum
     is_active: bool
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        'from_attributes': True
+    }
 
 class EmployeesOrdersResponse(BaseModel):
+    id: UUID
     username: str
     email: EmailStr
+    hire_date: datetime
     salary: float
+    is_active: bool
     orders: List[OrderResponse]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        'from_attributes': True
+    }
 
 
 class EmployeeUpdate(BaseModel):

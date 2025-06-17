@@ -9,17 +9,23 @@ class CategoryCreate(BaseModel):
 class CategoryResponse(BaseModel):
     id: UUID
     name: str
+    is_active: bool
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        'from_attributes': True
+    }
 
 class ProductCategoryResponse(BaseModel):
     id: UUID
     name: str
-    products: List[ProductResponse]
+    description: str
+    price: float
+    stock: int
+    is_active: bool
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        'from_attributes': True
+    }
 
 
 class CategoryUpdate(BaseModel):

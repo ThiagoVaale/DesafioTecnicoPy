@@ -21,7 +21,7 @@ class OrderController:
     def get_order_client(self, id_client: UUID) -> List[OrderResponse]:
         return self.service.get_order_client(id_client)
     
-    def get_order_employee(self, id_employee: UUID) -> OrderResponse:
+    def get_order_employee(self, id_employee: UUID) -> List[OrderResponse]:
         return self.service.get_order_employee(id_employee)
     
     def get_all_order(self) -> List[OrderResponse]:
@@ -31,4 +31,4 @@ class OrderController:
         return self.service.update_order(id_order, update_order)
     
     def cancel_order(self, id_order: UUID) -> OrderResponse:
-        return self.service.delete_order(id_order)
+        return self.service.cancel_order(id_order)

@@ -23,7 +23,7 @@ class ProductService:
         product = self.repository.get_product(product_name)
 
         if product is None:
-            raise HTTPException(status_code=404, detail=f'El producto {product_name} no se encontro')
+            raise HTTPException(status_code=404, detail=f'The product {product_name} was not found')
         
         return ProductResponse.model_validate(product)
     
@@ -31,7 +31,7 @@ class ProductService:
         products = self.repository.get_products()
 
         if not products:
-            raise HTTPException(status_code=404, detail='No hay productos')
+            raise HTTPException(status_code=404, detail='There are no products')
 
         list_product = []
 
@@ -45,7 +45,7 @@ class ProductService:
         product_category = self.repository.get_product_category(category)
 
         if not product_category:
-            raise HTTPException(status_code=404, detail='No hay productos con esa categoria')
+            raise HTTPException(status_code=404, detail='There are no products in that category.')
         
         list_product_category = []
 
@@ -59,15 +59,15 @@ class ProductService:
         find_product = self.repository.get_product(product_name)
 
         if find_product is None:
-            raise HTTPException(status_code=404, detail=f'El producto {product_name} no se encontro y no se puede actualizar')
+            raise HTTPException(status_code=404, detail=f'The product {product_name} was not found and cannot be updated.')
         
         if product_update.stock < 0:
-            raise HTTPException(status_code=416, detail='El stock no puede ser menor a 0')
+            raise HTTPException(status_code=416, detail='The stock cannot be less than 0')
         
         if product_update.stock == 0:
             find_product.is_active = False
         
-        find_product.name = product_name.name
+        find_product.name = product_update.name
         find_product.description = product_update.description
         find_product.price = product_update.price
         find_product.stock = product_update.stock
@@ -79,7 +79,7 @@ class ProductService:
         product = self.repository.get_product(product_name)
 
         if product is None:
-            raise HTTPException(status_code=404, detail=f'El producto {product_name} no existe y no se pudo eliminar')
+            raise HTTPException(status_code=404, detail=f'The product {product_name} does not exist and could not be deleted')
         
         deleted_product = self.repository.delete_product(product)
         return ProductResponse.model_validate(deleted_product)

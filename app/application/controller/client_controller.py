@@ -1,8 +1,7 @@
 from app.application.service.client_service import ClientService
 from app.persistence.repositories.client_repository import ClientRepository
 from app.presentation.schemas.client_schema import ClientCreate, ClientResponse, ClientUpdate
-from sqlmodel import Session
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
 class ClientController:
